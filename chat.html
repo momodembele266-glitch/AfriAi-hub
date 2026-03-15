@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="description" content="Chat IA AfriAI Hub – Interface de conversation intelligente adaptée à l'Afrique.">
+<title>Chat IA – AfriAI Hub 🌍</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#00A651;--green-light:#00C96A;--green-dark:#007A3D;
+  --gold:#FFD700;--red:#E63946;
+  --bg:#0A0F0D;--bg2:#111A14;--bg3:#162019;
+  --surface:#1C2A20;--surface2:#243329;
+  --border:rgba(0,166,81,0.18);
+  --text:#E8F5EC;--text2:#A8C4AD;--muted:#6B8F72;
+  --font:'Plus Jakarta Sans',sans-serif;
+  --radius:12px;
+}
+[data-theme="light"]{--bg:#F0F7F2;--bg2:#E4F0E8;--bg3:#D8EAE0;--surface:#FFFFFF;--surface2:#F0F7F2;--border:rgba(0,166,81,0.25);--text:#0D1F12;--text2:#2D5A38;--muted:#5A7A61;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex;height:100vh;}
+
+/* SIDEBAR */
+.sidebar{
+  width:280px;flex-shrink:0;
+  background:var(--bg2);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;height:100vh;
+  transition:transform 0.3s;
+}
+.sidebar-header{
+  padding:16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.sidebar-logo{
+  display:flex;align-items:center;gap:8px;
+  font-weight:800;font-size:1rem;color:var(--text);text-decoration:none;
+}
+.sidebar-logo-icon{
+  width:32px;height:32px;background:linear-gradient(135deg,var(--green),var(--gold));
+  border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;
+}
+.btn-new-chat{
+  width:100%;margin:12px 0;padding:11px;
+  background:linear-gradient(135deg,var(--green),var(--green-light));
+  border:none;color:#000;border-radius:10px;
+  font-family:var(--font);font-size:0.85rem;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all 0.2s;box-shadow:0 4px 12px rgba(0,166,81,0.3);
+}
+.btn-new-chat:hover{box-shadow:0 6px 18px rgba(0,166,81,0.45);}
+
+.sidebar-section-label{
+  font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--muted);padding:0 12px;margin:8px 0 4px;
+}
+.chat-history{flex:1;overflow-y:auto;padding:0 8px 8px;}
+.chat-history::-webkit-scrollbar{width:3px;}
+.chat-history::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.history-item{
+  padding:10px 12px;border-radius:8px;cursor:pointer;
+  display:flex;align-items:center;gap:10px;
+  transition:background 0.15s;margin-bottom:2px;
+}
+.history-item:hover,.history-item.active{background:var(--surface);}
+.history-item.active{border-left:2px solid var(--green);}
+.history-icon{font-size:0.9rem;flex-shrink:0;}
+.history-title{font-size:0.82rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;}
+.history-date{font-size:0.65rem;color:var(--muted);}
+
+.sidebar-footer{
+  padding:12px;border-top:1px solid var(--border);
+}
+.user-card{
+  display:flex;align-items:center;gap:10px;
+  padding:10px;border-radius:10px;background:var(--surface);
+  cursor:pointer;transition:background 0.2s;
+}
+.user-card:hover{background:var(--surface2);}
+.user-av{
+  width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(135deg,#1d4ed8,#7c3aed);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.85rem;font-weight:700;color:#fff;flex-shrink:0;
+}
+.user-name{font-size:0.85rem;font-weight:600;}
+.user-plan{font-size:0.7rem;color:var(--green);font-weight:500;}
+.user-limit{font-size:0.68rem;color:var(--muted);margin-top:2px;}
+
+.progress-bar{
+  width:100%;height:3px;background:var(--border);
+  border-radius:2px;margin-top:6px;overflow:hidden;
+}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:2px;transition:width 0.3s;}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+
+/* TOP BAR */
+.topbar{
+  padding:14px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg2);flex-shrink:0;
+}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.btn-toggle-sidebar{
+  width:36px;height:36px;background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:1rem;cursor:pointer;color:var(--text2);transition:all 0.2s;
+  display:none;
+}
+.topbar-title{font-weight:700;font-size:0.95rem;}
+.topbar-sub{font-size:0.72rem;color:var(--muted);}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+
+.select-sm{
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text2);padding:6px 10px;border-radius:8px;
+  font-family:var(--font);font-size:0.78rem;cursor:pointer;outline:none;
+}
+.btn-icon{
+  width:34px;height:34px;background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:0.9rem;cursor:pointer;color:var(--text2);transition:all 0.2s;
+}
+.btn-icon:hover{border-color:var(--green);color:var(--green-light);}
+
+/* MESSAGES */
+.messages-area{
+  flex:1;overflow-y:auto;padding:24px 20px;
+  display:flex;flex-direction:column;gap:20px;
+}
+.messages-area::-webkit-scrollbar{width:4px;}
+.messages-area::-webkit-scrollbar-thumb{background:var(--surface);border-radius:2px;}
+
+/* Welcome screen */
+.welcome{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  flex:1;text-align:center;padding:40px 20px;
+}
+.welcome-logo{
+  width:72px;height:72px;background:linear-gradient(135deg,var(--green),var(--gold));
+  border-radius:20px;display:flex;align-items:center;justify-content:center;
+  font-size:2rem;margin-bottom:20px;
+  box-shadow:0 0 40px rgba(0,166,81,0.3);
+}
+.welcome h2{font-size:1.6rem;font-weight:800;margin-bottom:8px;letter-spacing:-0.02em;}
+.welcome p{color:var(--text2);font-size:0.9rem;max-width:420px;line-height:1.6;margin-bottom:28px;}
+
+.presets-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:10px;
+  max-width:560px;width:100%;
+}
+.preset-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:16px 14px;text-align:left;
+  cursor:pointer;transition:all 0.2s;
+}
+.preset-card:hover{border-color:rgba(0,166,81,0.4);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.2);}
+.preset-card-icon{font-size:1.3rem;margin-bottom:8px;display:block;}
+.preset-card-title{font-size:0.82rem;font-weight:700;color:var(--text);margin-bottom:3px;}
+.preset-card-desc{font-size:0.72rem;color:var(--muted);line-height:1.4;}
+
+/* Messages */
+.msg-row{display:flex;gap:12px;max-width:780px;margin:0 auto;width:100%;animation:msgIn 0.3s ease;}
+.msg-row.user{flex-direction:row-reverse;}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.msg-av{
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.9rem;flex-shrink:0;margin-top:2px;
+}
+.msg-av.ai{background:linear-gradient(135deg,var(--green-dark),var(--green));}
+.msg-av.usr{background:linear-gradient(135deg,#1d4ed8,#7c3aed);color:#fff;font-weight:700;}
+.msg-body{flex:1;min-width:0;}
+.msg-meta{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.msg-row.user .msg-meta{flex-direction:row-reverse;}
+.msg-sender{font-size:0.78rem;font-weight:600;}
+.msg-time-sm{font-size:0.65rem;color:var(--muted);}
+.msg-content{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;border-top-left-radius:4px;
+  padding:12px 16px;font-size:0.875rem;line-height:1.6;
+}
+.msg-row.user .msg-content{
+  background:linear-gradient(135deg,var(--green-dark),var(--green));
+  color:#000;font-weight:500;border:none;
+  border-top-left-radius:12px;border-top-right-radius:4px;
+}
+.msg-actions{
+  display:flex;gap:6px;margin-top:8px;opacity:0;transition:opacity 0.2s;
+}
+.msg-row:hover .msg-actions{opacity:1;}
+.msg-action-btn{
+  background:none;border:1px solid var(--border);
+  color:var(--muted);padding:3px 10px;border-radius:6px;
+  font-family:var(--font);font-size:0.68rem;cursor:pointer;
+  transition:all 0.15s;display:flex;align-items:center;gap:4px;
+}
+.msg-action-btn:hover{border-color:var(--green);color:var(--green-light);}
+
+/* Typing */
+.typing-row{display:flex;gap:12px;max-width:780px;margin:0 auto;width:100%;}
+.typing-bubble{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;border-top-left-radius:4px;
+  padding:14px 18px;display:flex;gap:5px;align-items:center;
+}
+.typing-bubble span{
+  width:7px;height:7px;background:var(--green);border-radius:50%;
+  animation:typing 1s infinite;
+}
+.typing-bubble span:nth-child(2){animation-delay:0.15s;}
+.typing-bubble span:nth-child(3){animation-delay:0.3s;}
+@keyframes typing{0%,100%{opacity:0.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-4px)}}
+
+/* INPUT */
+.input-area{
+  padding:16px 20px;border-top:1px solid var(--border);
+  background:var(--bg2);flex-shrink:0;
+}
+.input-wrapper{
+  max-width:780px;margin:0 auto;
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:14px;overflow:hidden;transition:border-color 0.2s;
+}
+.input-wrapper:focus-within{border-color:var(--green);}
+.input-top{display:flex;gap:8px;padding:10px 12px;align-items:flex-end;}
+.chat-textarea{
+  flex:1;background:transparent;border:none;color:var(--text);
+  font-family:var(--font);font-size:0.9rem;resize:none;outline:none;
+  min-height:44px;max-height:150px;line-height:1.5;
+}
+.chat-textarea::placeholder{color:var(--muted);}
+.btn-send-main{
+  width:40px;height:40px;border-radius:10px;
+  background:linear-gradient(135deg,var(--green),var(--green-light));
+  border:none;color:#000;font-size:1rem;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;flex-shrink:0;
+  box-shadow:0 3px 10px rgba(0,166,81,0.3);
+}
+.btn-send-main:hover{box-shadow:0 5px 16px rgba(0,166,81,0.5);}
+.btn-send-main:disabled{opacity:0.4;cursor:not-allowed;box-shadow:none;}
+.input-bottom{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 14px 10px;
+}
+.input-tools{display:flex;gap:6px;}
+.tool-btn-sm{
+  background:none;border:1px solid var(--border);
+  color:var(--muted);padding:4px 10px;border-radius:6px;
+  font-family:var(--font);font-size:0.72rem;cursor:pointer;
+  transition:all 0.15s;display:flex;align-items:center;gap:4px;
+}
+.tool-btn-sm:hover{border-color:var(--green);color:var(--green-light);}
+.tool-btn-sm.active{border-color:var(--red);color:var(--red);}
+.input-info{display:flex;align-items:center;gap:12px;}
+.input-hint{font-size:0.65rem;color:var(--muted);}
+
+/* CONTEXT PILL */
+.context-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(0,166,81,0.1);border:1px solid rgba(0,166,81,0.25);
+  color:var(--green);padding:4px 12px;border-radius:100px;
+  font-size:0.72rem;font-weight:600;margin-bottom:12px;
+}
+.context-pill-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text);padding:10px 18px;border-radius:10px;
+  font-size:0.82rem;z-index:9999;transition:transform 0.3s;
+  box-shadow:0 8px 24px rgba(0,0,0,0.4);max-width:300px;text-align:center;
+}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .sidebar{
+    position:fixed;left:0;top:0;bottom:0;z-index:100;
+    transform:translateX(-100%);
+  }
+  .sidebar.open{transform:translateX(0);}
+  .btn-toggle-sidebar{display:flex!important;}
+  .topbar-title{font-size:0.85rem;}
+  .presets-grid{grid-template-columns:1fr;}
+  .messages-area{padding:16px 12px;}
+  .input-area{padding:12px;}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a href="index.html" class="sidebar-logo">
+      <div class="sidebar-logo-icon">🌍</div>
+      AfriAI Hub
+    </a>
+  </div>
+  <div style="padding:8px 12px 0">
+    <button class="btn-new-chat" onclick="newChat()">✏️ Nouveau chat</button>
+    <div class="sidebar-section-label">Aujourd'hui</div>
+  </div>
+  <div class="chat-history" id="chatHistory">
+    <div class="history-item active">
+      <span class="history-icon">🌾</span>
+      <div style="flex:1;min-width:0">
+        <div class="history-title">Conseils culture mil</div>
+        <div class="history-date">il y a 2h</div>
+      </div>
+    </div>
+    <div class="history-item" onclick="loadHistory(this, 'CV pour poste marketing Lagos')">
+      <span class="history-icon">📄</span>
+      <div style="flex:1;min-width:0">
+        <div class="history-title">CV pour poste marketing</div>
+        <div class="history-date">hier</div>
+      </div>
+    </div>
+    <div class="history-item" onclick="loadHistory(this, 'Idées business Abidjan 2026')">
+      <span class="history-icon">💼</span>
+      <div style="flex:1;min-width:0">
+        <div class="history-title">Idées business Abidjan</div>
+        <div class="history-date">2 jours</div>
+      </div>
+    </div>
+    <div class="history-item" onclick="loadHistory(this, 'Prix marché Dakar')">
+      <span class="history-icon">📊</span>
+      <div style="flex:1;min-width:0">
+        <div class="history-title">Prix marché Dakar</div>
+        <div class="history-date">3 jours</div>
+      </div>
+    </div>
+    <div class="sidebar-section-label" style="margin-top:12px">Cette semaine</div>
+    <div class="history-item" onclick="loadHistory(this, 'Symptômes paludisme')">
+      <span class="history-icon">💊</span>
+      <div style="flex:1;min-width:0">
+        <div class="history-title">Symptômes paludisme</div>
+        <div class="history-date">5 jours</div>
+      </div>
+    </div>
+    <div class="history-item" onclick="loadHistory(this, 'Traduction Wolof')">
+      <span class="history-icon">🗣️</span>
+      <div style="flex:1;min-width:0">
+        <div class="history-title">Traduction Wolof</div>
+        <div class="history-date">6 jours</div>
+      </div>
+    </div>
+  </div>
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="user-av">AM</div>
+      <div style="flex:1;min-width:0">
+        <div class="user-name">Utilisateur Gratuit</div>
+        <div class="user-plan">✨ Plan Gratuit</div>
+        <div class="user-limit" id="sidebarLimit">47/50 requêtes</div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:6%"></div></div>
+      </div>
+    </div>
+    <a href="pricing.html" style="display:block;margin-top:10px;text-align:center;background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.25);color:var(--gold);padding:8px;border-radius:8px;font-size:0.78rem;font-weight:700;text-decoration:none">
+      ⚡ Passer à Pro — 5$/mois
+    </a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="btn-toggle-sidebar btn-icon" onclick="toggleSidebar()" style="display:flex">☰</button>
+      <div>
+        <div class="topbar-title" id="chatTitle">AfriAI Chat</div>
+        <div class="topbar-sub">Contexte Afrique activé — FCFA, CEDEAO, langues locales</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <select class="select-sm" id="langPicker" onchange="setLang(this.value)">
+        <option value="fr">🇫🇷 FR</option>
+        <option value="en">🇬🇧 EN</option>
+        <option value="sw">🇰🇪 SW</option>
+        <option value="ar">🇸🇦 AR</option>
+      </select>
+      <button class="btn-icon" onclick="toggleTheme()" id="themeBtn" title="Thème">🌙</button>
+      <button class="btn-icon" onclick="clearChat()" title="Effacer">🗑️</button>
+      <a href="index.html" class="btn-icon" title="Accueil" style="text-decoration:none">🏠</a>
+    </div>
+  </div>
+
+  <div class="messages-area" id="messagesArea">
+    <!-- Welcome screen -->
+    <div class="welcome" id="welcomeScreen">
+      <div class="welcome-logo">🌍</div>
+      <div class="context-pill">
+        <span class="context-pill-dot"></span>
+        Contexte Afrique actif — FCFA · CEDEAO · Langues locales
+      </div>
+      <h2>Bonjour, comment puis-je t'aider ?</h2>
+      <p>Je suis spécialisé dans l'agriculture, la santé, l'éducation, le business et les langues africaines.</p>
+      <div class="presets-grid">
+        <div class="preset-card" onclick="usePreset('Comment améliorer ma culture de mil en zone sahélienne cette saison ?')">
+          <span class="preset-card-icon">🌾</span>
+          <div class="preset-card-title">Agriculture locale</div>
+          <div class="preset-card-desc">Conseils culture, météo, récoltes</div>
+        </div>
+        <div class="preset-card" onclick="usePreset('Aide-moi à rédiger un CV pour postuler à un emploi marketing en Côte d\'Ivoire')">
+          <span class="preset-card-icon">📄</span>
+          <div class="preset-card-title">CV & Emploi</div>
+          <div class="preset-card-desc">CV adapté marchés africains</div>
+        </div>
+        <div class="preset-card" onclick="usePreset('Quelles sont les meilleures idées de business à Dakar avec moins de 200 000 FCFA ?')">
+          <span class="preset-card-icon">💼</span>
+          <div class="preset-card-title">Business Africa</div>
+          <div class="preset-card-desc">Idées, business plan, marchés</div>
+        </div>
+        <div class="preset-card" onclick="usePreset('Quels sont les symptômes du paludisme et comment se faire soigner ?')">
+          <span class="preset-card-icon">🏥</span>
+          <div class="preset-card-title">Santé & Bien-être</div>
+          <div class="preset-card-desc">Info médicale locale</div>
+        </div>
+        <div class="preset-card" onclick="usePreset('Traduis en Wolof : Bonjour, comment allez-vous ?')">
+          <span class="preset-card-icon">🗣️</span>
+          <div class="preset-card-title">Traducteur</div>
+          <div class="preset-card-desc">Wolof, Lingala, Haoussa, Swahili</div>
+        </div>
+        <div class="preset-card" onclick="usePreset('Explique-moi comment fonctionne Orange Money et M-Pesa pour les transferts')">
+          <span class="preset-card-icon">📱</span>
+          <div class="preset-card-title">Mobile Money</div>
+          <div class="preset-card-desc">Orange Money, MTN, M-Pesa</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INPUT -->
+  <div class="input-area">
+    <div class="input-wrapper">
+      <div class="input-top">
+        <textarea
+          class="chat-textarea"
+          id="mainInput"
+          placeholder="Message AfriAI... (Enter pour envoyer, Shift+Enter pour saut de ligne)"
+          rows="1"
+          onkeydown="handleKey(event)"
+          oninput="autoResize(this)"
+          maxlength="2000"
+        ></textarea>
+        <button class="btn-send-main" id="sendBtn" onclick="sendMessage()" title="Envoyer">➤</button>
+      </div>
+      <div class="input-bottom">
+        <div class="input-tools">
+          <button class="tool-btn-sm" id="voiceBtn" onclick="toggleVoice()">🎤 Vocal</button>
+          <button class="tool-btn-sm" onclick="insertTemplate('🌍 Contexte : [mon pays], ')">🌍 Contexte</button>
+          <button class="tool-btn-sm" onclick="shareOnWhatsApp()">📱 WhatsApp</button>
+        </div>
+        <div class="input-info">
+          <span class="input-hint" id="charInfo">0 / 2000</span>
+          <span class="input-hint">↵ Envoyer</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// THEME
+function toggleTheme(){
+  const h=document.documentElement;
+  h.dataset.theme = h.dataset.theme==='dark'?'light':'dark';
+  document.getElementById('themeBtn').textContent = h.dataset.theme==='dark'?'🌙':'☀️';
+  localStorage.setItem('theme',h.dataset.theme);
+}
+(function(){const s=localStorage.getItem('theme');if(s){document.documentElement.dataset.theme=s;if(s==='light')document.getElementById('themeBtn').textContent='🌙';}})();
+
+// LANG
+let currentLang = localStorage.getItem('lang')||'fr';
+document.getElementById('langPicker').value = currentLang;
+function setLang(l){currentLang=l;localStorage.setItem('lang',l);if(l==='ar')document.documentElement.dir='rtl';else document.documentElement.dir='ltr';}
+setLang(currentLang);
+
+// SIDEBAR
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');}
+
+// CHAT STATE
+let messages = [];
+let isLoading = false;
+let reqCount = parseInt(localStorage.getItem('reqCount')||'0');
+updateProgress();
+
+function updateProgress(){
+  const pct = (reqCount/50)*100;
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('sidebarLimit').textContent = reqCount+'/50 requêtes';
+}
+
+function newChat(){
+  messages=[];
+  document.getElementById('messagesArea').innerHTML = document.getElementById('messagesArea').innerHTML;
+  // Rebuild welcome
+  document.getElementById('messagesArea').innerHTML = `<div class="welcome" id="welcomeScreen">
+    <div class="welcome-logo">🌍</div>
+    <div class="context-pill"><span class="context-pill-dot"></span>Contexte Afrique actif — FCFA · CEDEAO · Langues locales</div>
+    <h2>Nouveau chat</h2>
+    <p>Pose ta question en français, anglais, swahili ou arabe.</p>
+    <div class="presets-grid">
+      <div class="preset-card" onclick="usePreset('Comment améliorer ma culture de mil ?')"><span class="preset-card-icon">🌾</span><div class="preset-card-title">Agriculture</div></div>
+      <div class="preset-card" onclick="usePreset('Aide-moi à créer mon CV')"><span class="preset-card-icon">📄</span><div class="preset-card-title">CV & Emploi</div></div>
+      <div class="preset-card" onclick="usePreset('Idées business avec 100 000 FCFA')"><span class="preset-card-icon">💼</span><div class="preset-card-title">Business</div></div>
+      <div class="preset-card" onclick="usePreset('Traduction en Wolof : Bonjour')"><span class="preset-card-icon">🗣️</span><div class="preset-card-title">Traduction</div></div>
+    </div>
+  </div>`;
+  document.getElementById('chatTitle').textContent = 'AfriAI Chat';
+  document.querySelectorAll('.history-item').forEach(i=>i.classList.remove('active'));
+}
+
+function loadHistory(el, title){
+  document.querySelectorAll('.history-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('chatTitle').textContent = title;
+  messages = [];
+  const area = document.getElementById('messagesArea');
+  area.innerHTML = '';
+  showToast('💬 Conversation chargée (simulation)','success');
+}
+
+function usePreset(text){
+  document.getElementById('mainInput').value = text;
+  autoResize(document.getElementById('mainInput'));
+  document.getElementById('mainInput').focus();
+  sendMessage();
+}
+
+function handleKey(e){
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}
+}
+function autoResize(el){
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,150)+'px';
+}
+
+document.getElementById('mainInput').addEventListener('input',function(){
+  document.getElementById('charInfo').textContent=this.value.length+' / 2000';
+});
+
+function clearChat(){
+  if(confirm('Effacer cette conversation ?')){newChat();}
+}
+
+function addMsg(role, text){
+  const welcome = document.getElementById('welcomeScreen');
+  if(welcome) welcome.remove();
+
+  const area = document.getElementById('messagesArea');
+  const time = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  const isAI = role==='ai';
+  const html = `<div class="msg-row ${isAI?'':'user'}">
+    <div class="msg-av ${isAI?'ai':'usr'}">${isAI?'🌍':'👤'}</div>
+    <div class="msg-body">
+      <div class="msg-meta">
+        <span class="msg-sender">${isAI?'AfriAI':'Toi'}</span>
+        <span class="msg-time-sm">${time}</span>
+      </div>
+      <div class="msg-content">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>
+      ${isAI?`<div class="msg-actions">
+        <button class="msg-action-btn" onclick="copyMsg(this)">📋 Copier</button>
+        <button class="msg-action-btn" onclick="shareMsg(this)">📱 Partager</button>
+        <button class="msg-action-btn">👍</button>
+        <button class="msg-action-btn">👎</button>
+      </div>`:''}
+    </div>
+  </div>`;
+  area.insertAdjacentHTML('beforeend', html);
+  area.scrollTop = area.scrollHeight;
+  messages.push({role:isAI?'assistant':'user', content:text});
+}
+
+function addTypingIndicator(){
+  const area = document.getElementById('messagesArea');
+  area.insertAdjacentHTML('beforeend',`<div class="typing-row" id="typingRow">
+    <div class="msg-av ai">🌍</div>
+    <div class="typing-bubble"><span></span><span></span><span></span></div>
+  </div>`);
+  area.scrollTop = area.scrollHeight;
+}
+
+const afriResponses = {
+  default:[
+    "Bonjour ! 🌍 Je suis AfriAI, spécialisé dans les réalités africaines.\n\nJe peux t'aider sur :\n• **Agriculture** : cultures, météo, semences\n• **Business** : idées, FCFA, marchés locaux\n• **Santé** : informations médicales\n• **Éducation** : cours, exercices\n• **Langues** : traduction africaine\n\nPose ta question et je t'aide avec le contexte africain !",
+    "Merci pour ta question ! 💡 En Afrique, ce sujet a des spécificités importantes.\n\nPeux-tu me préciser ton pays ? Cela me permettra d'adapter mes conseils aux marchés locaux, au contexte climatique et aux réglementations en vigueur.",
+  ],
+  agri:"🌾 **Conseils agriculture africaine**\n\nPour optimiser tes cultures en Afrique subsaharienne :\n\n**Saison des pluies (Mai–Octobre) :**\n• Mil, sorgho, maïs, arachide\n• Espacement optimal : 70-80cm entre rangs\n• Fertilisation : 200kg/ha DAP au semis\n\n**Saison sèche (Nov–Avril) :**\n• Culture irriguée : tomates, oignons, légumes\n• Système goutte-à-goutte économe en eau\n\n📊 **Météo actuelle :** Consultation OpenMeteo recommandée pour données précises de ta région.\n\n💡 **Astuce FCFA :** 1 sac d'engrais NPK = ~15 000 FCFA. Rentabilité estimée : 3x à 5x en valeur récolte.",
+  cv:"📄 **CV Professionnel Afrique**\n\nVoici la structure optimale pour les marchés africains :\n\n**1. En-tête**\nNom • Téléphone (WhatsApp) • Email • LinkedIn\n\n**2. Résumé professionnel** (3 lignes max)\n\"Manager motivé avec 5 ans d'expérience en gestion commerciale au Sénégal...\"\n\n**3. Compétences clés**\nAdaptées au secteur et au pays cible\n\n**4. Expériences** (ordre chronologique inverse)\n\n**5. Formation** (diplômes + formations en ligne)\n\n**6. Langues**\nFrançais, Anglais, Wolof — avec niveau (B2, C1...)\n\n🎯 **Conseil :** Va sur tools.html pour générer ton CV complet automatiquement !",
+  translate:"🗣️ **Traducteur Langues Africaines**\n\nJe peux traduire vers :\n\n• **Wolof** (Sénégal, Gambie)\n• **Lingala** (RD Congo, Congo)\n• **Haoussa** (Nigeria, Niger, Tchad)\n• **Bambara/Dioula** (Mali, Burkina, CI)\n• **Swahili** (Kenya, Tanzanie, Ouganda)\n• **Twi** (Ghana)\n• **Igbo & Yoruba** (Nigeria)\n\n📝 Dis-moi la phrase à traduire et la langue cible !\n\nExemple : \"Traduis 'Bonjour, bienvenue' en Wolof\"\n→ **Mangi fi, baal ma** (Wolof)",
+  business:"💼 **Business en Afrique — Idées 2026**\n\n**Faible investissement (< 100 000 FCFA) :**\n1. Revente mobile money (commission 2-5%)\n2. Vente en ligne WhatsApp + livraison\n3. Cours particuliers à domicile\n4. Couture/broderie sur commande\n\n**Moyen investissement (100k-500k FCFA) :**\n1. Mini-boutique quartier / épicerie\n2. Transformation agroalimentaire (jus, attiéké)\n3. Prestation photo/vidéo événements\n4. Agence de voyage local\n\n**Secteurs porteurs :**\n• Fintech / Mobile Money\n• AgriTech et transformation\n• EdTech (formation digitale)\n• Santé communautaire\n\n💰 Financement : Orange Finances, CréditPro, fonds UEMOA",
+};
+
+function getResponse(text){
+  const l=text.toLowerCase();
+  if(l.includes('mil')||l.includes('agri')||l.includes('culture')||l.includes('récolte')||l.includes('plante')||l.includes('semis'))return afriResponses.agri;
+  if(l.includes('cv')||l.includes('emploi')||l.includes('curriculum')||l.includes('recrutement'))return afriResponses.cv;
+  if(l.includes('traduis')||l.includes('traduction')||l.includes('wolof')||l.includes('lingala')||l.includes('haoussa')||l.includes('swahili'))return afriResponses.translate;
+  if(l.includes('business')||l.includes('commerce')||l.includes('entrepreneur')||l.includes('fcfa')||l.includes('idée'))return afriResponses.business;
+  return afriResponses.default[Math.floor(Math.random()*afriResponses.default.length)];
+}
+
+async function sendMessage(){
+  const input = document.getElementById('mainInput');
+  const text = input.value.trim();
+  if(!text||isLoading)return;
+  if(reqCount>=50){showToast('⚠️ Limite atteinte. Passe à Pro pour continuer !','error');return;}
+
+  isLoading=true;
+  document.getElementById('sendBtn').disabled=true;
+  input.value=''; input.style.height='auto';
+  document.getElementById('charInfo').textContent='0 / 2000';
+
+  addMsg('user',text);
+  reqCount++; localStorage.setItem('reqCount',reqCount);
+  updateProgress();
+  addTypingIndicator();
+
+  const delay = 700+Math.random()*1000;
+
+  setTimeout(async ()=>{
+    document.getElementById('typingRow')?.remove();
+    try{
+      const r = await fetch("https://api.anthropic.com/v1/messages",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          model:"claude-sonnet-4-20250514",
+          max_tokens:1000,
+          system:`Tu es AfriAI, l'assistant IA de référence pour l'Afrique. Tu es expert en :
+- Agriculture africaine (mil, sorgho, manioc, cacao, café, coton, arachide)
+- Économie africaine : franc CFA, FCFA, CEDEAO, UEMOA, marchés locaux, mobile money (Orange Money, MTN MoMo, M-Pesa, Wave)
+- Langues : tu peux traduire en Wolof, Lingala, Bambara, Haoussa, Swahili, Twi, Yoruba, Igbo
+- Santé publique africaine, maladies tropicales (paludisme, typhoïde, choléra)
+- Business et entrepreneuriat africain
+- Éducation et formation professionnelle en Afrique
+Tu réponds en ${currentLang==='en'?'English':currentLang==='sw'?'Swahili':currentLang==='ar'?'العربية':'français'}.
+Sois pratique, concis (max 250 mots), utilise des emojis africains. Adapte toujours au contexte africain.`,
+          messages:[...messages,{role:'user',content:text}]
+        })
+      });
+      if(!r.ok)throw new Error('API');
+      const d=await r.json();
+      addMsg('ai',d.content[0].text);
+    } catch(e){
+      addMsg('ai',getResponse(text));
+    }
+    isLoading=false;
+    document.getElementById('sendBtn').disabled=false;
+  },delay);
+}
+
+function copyMsg(btn){
+  const text=btn.closest('.msg-body').querySelector('.msg-content').textContent;
+  navigator.clipboard.writeText(text).then(()=>showToast('📋 Copié !','success'));
+}
+function shareMsg(btn){
+  const text=btn.closest('.msg-body').querySelector('.msg-content').textContent;
+  const url=`https://wa.me/?text=${encodeURIComponent('Via AfriAI Hub 🌍\n\n'+text+'\n\nhttps://afriaihub.com')}`;
+  window.open(url,'_blank');
+}
+function shareOnWhatsApp(){
+  const last=messages.filter(m=>m.role==='assistant').pop();
+  if(!last){showToast('Pas de réponse à partager encore','error');return;}
+  const url=`https://wa.me/?text=${encodeURIComponent('Réponse AfriAI 🌍\n\n'+last.content)}`;
+  window.open(url,'_blank');
+}
+function insertTemplate(text){
+  const input=document.getElementById('mainInput');
+  input.value=text+input.value;
+  input.focus();
+}
+
+// Voice
+let recognition=null;
+function toggleVoice(){
+  const btn=document.getElementById('voiceBtn');
+  if(!('SpeechRecognition'in window)&&!('webkitSpeechRecognition'in window)){showToast('⚠️ Vocal non supporté','error');return;}
+  if(recognition){recognition.stop();recognition=null;btn.classList.remove('active');return;}
+  recognition=new(window.SpeechRecognition||window.webkitSpeechRecognition)();
+  const langMap={fr:'fr-FR',en:'en-US',sw:'sw-KE',ar:'ar-SA'};
+  recognition.lang=langMap[currentLang]||'fr-FR';
+  recognition.onresult=e=>{document.getElementById('mainInput').value=e.results[0][0].transcript;recognition=null;btn.classList.remove('active');showToast('🎤 Transcrit !','success');};
+  recognition.onerror=()=>{recognition=null;btn.classList.remove('active');};
+  recognition.onend=()=>{recognition=null;btn.classList.remove('active');};
+  recognition.start();btn.classList.add('active');showToast('🎤 Parle maintenant...','success');
+}
+
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className=`toast ${type} show`;
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// Reset daily
+const today=new Date().toDateString();
+if(localStorage.getItem('reqDate')!==today){localStorage.setItem('reqDate',today);localStorage.setItem('reqCount','0');reqCount=0;updateProgress();}
+</script>
+</body>
+</html>

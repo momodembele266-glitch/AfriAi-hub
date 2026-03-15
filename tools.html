@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="description" content="Outils IA AfriAI Hub – CV generator, traducteur langues africaines, prédicteur prix marchés.">
+<title>Outils IA – AfriAI Hub 🌍</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--green:#00A651;--green-light:#00C96A;--green-dark:#007A3D;--gold:#FFD700;--red:#E63946;--bg:#0A0F0D;--bg2:#111A14;--bg3:#162019;--surface:#1C2A20;--surface2:#243329;--border:rgba(0,166,81,0.18);--text:#E8F5EC;--text2:#A8C4AD;--muted:#6B8F72;--font:'Plus Jakarta Sans',sans-serif;--radius:12px;}
+[data-theme="light"]{--bg:#F0F7F2;--bg2:#E4F0E8;--bg3:#D8EAE0;--surface:#FFFFFF;--surface2:#F0F7F2;--border:rgba(0,166,81,0.25);--text:#0D1F12;--text2:#2D5A38;--muted:#5A7A61;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:var(--green-dark);border-radius:2px;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:rgba(10,15,13,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+[data-theme="light"] nav{background:rgba(240,247,242,0.92);}
+.nav-logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:1.1rem;color:var(--text);text-decoration:none;}
+.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--green),var(--gold));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;}
+.logo-text span{color:var(--gold);}
+.nav-links{display:flex;gap:6px;list-style:none;}
+.nav-links a{text-decoration:none;color:var(--text2);font-size:0.83rem;font-weight:500;padding:6px 12px;border-radius:8px;transition:all 0.2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--green-light);background:rgba(0,166,81,0.1);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.btn-theme{width:34px;height:34px;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:all 0.2s;}
+.btn-start{background:linear-gradient(135deg,var(--green),var(--green-light));border:none;color:#000;padding:7px 18px;border-radius:8px;font-family:var(--font);font-size:0.82rem;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;}
+
+/* HERO */
+.page-hero{padding:100px 24px 60px;text-align:center;background:linear-gradient(180deg,rgba(0,166,81,0.06) 0%,transparent 60%);}
+.page-hero h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-0.02em;margin-bottom:12px;}
+.page-hero h1 span{color:var(--green-light);}
+.page-hero p{color:var(--text2);font-size:1rem;max-width:520px;margin:0 auto;}
+
+/* TABS */
+.tools-tabs{max-width:1100px;margin:0 auto;padding:0 24px 40px;}
+.tabs-header{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;margin-bottom:36px;border-bottom:1px solid var(--border);}
+.tabs-header::-webkit-scrollbar{display:none;}
+.tab-btn{background:transparent;border:none;color:var(--text2);padding:10px 20px;font-family:var(--font);font-size:0.85rem;font-weight:600;cursor:pointer;border-radius:8px;white-space:nowrap;transition:all 0.2s;position:relative;}
+.tab-btn::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:2px;background:var(--green);transform:scaleX(0);transition:transform 0.2s;border-radius:2px;}
+.tab-btn.active{color:var(--green-light);}
+.tab-btn.active::after{transform:scaleX(1);}
+.tab-btn:hover{background:rgba(0,166,81,0.08);color:var(--green-light);}
+
+.tool-panel{display:none;}
+.tool-panel.active{display:block;}
+
+/* TOOL LAYOUT */
+.tool-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.tool-card-main{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 24px;}
+.tool-card-main h3{font-size:1.1rem;font-weight:800;margin-bottom:6px;}
+.tool-card-main p.desc{color:var(--text2);font-size:0.82rem;margin-bottom:24px;line-height:1.5;}
+
+/* FORM */
+.form-group{margin-bottom:16px;}
+.form-label{display:block;font-size:0.78rem;font-weight:600;color:var(--text2);margin-bottom:6px;}
+.form-input,.form-select,.form-textarea{width:100%;background:var(--bg3);border:1.5px solid var(--border);color:var(--text);padding:10px 14px;border-radius:10px;font-family:var(--font);font-size:0.875rem;outline:none;transition:border-color 0.2s;}
+.form-textarea{resize:vertical;min-height:80px;}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--muted);}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--green);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+.btn-generate{width:100%;padding:13px;background:linear-gradient(135deg,var(--green),var(--green-light));border:none;color:#000;border-radius:10px;font-family:var(--font);font-size:0.95rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;box-shadow:0 4px 16px rgba(0,166,81,0.3);}
+.btn-generate:hover{box-shadow:0 6px 22px rgba(0,166,81,0.45);}
+.btn-generate:disabled{opacity:0.5;cursor:not-allowed;}
+
+/* OUTPUT */
+.output-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px;min-height:300px;position:relative;}
+.output-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.output-title{font-weight:700;font-size:0.9rem;display:flex;align-items:center;gap:8px;}
+.output-actions{display:flex;gap:8px;}
+.btn-action{background:var(--surface);border:1px solid var(--border);color:var(--text2);padding:6px 14px;border-radius:8px;font-family:var(--font);font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.btn-action:hover{border-color:var(--green);color:var(--green-light);}
+.output-body{font-size:0.875rem;line-height:1.7;color:var(--text2);white-space:pre-wrap;}
+.output-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;color:var(--muted);font-size:0.85rem;text-align:center;gap:8px;}
+.output-placeholder span{font-size:2rem;}
+
+/* LOADING */
+.loading-bar{width:100%;height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:16px;}
+.loading-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold),var(--green));background-size:200%;animation:load 1.5s linear infinite;}
+@keyframes load{0%{background-position:200%}100%{background-position:0%}}
+
+/* CV PREVIEW */
+.cv-preview{background:#fff;color:#1a1a1a;border-radius:10px;padding:24px;font-family:Georgia,serif;font-size:0.82rem;line-height:1.5;}
+.cv-header{border-bottom:3px solid #00A651;padding-bottom:12px;margin-bottom:14px;}
+.cv-name{font-size:1.4rem;font-weight:900;color:#0d1f12;letter-spacing:-0.02em;}
+.cv-contact{font-size:0.75rem;color:#666;margin-top:4px;}
+.cv-section{margin-bottom:14px;}
+.cv-section-title{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#00A651;border-bottom:1px solid #ddd;padding-bottom:4px;margin-bottom:8px;}
+.cv-item{margin-bottom:8px;}
+.cv-item-title{font-weight:700;font-size:0.82rem;}
+.cv-item-sub{font-size:0.75rem;color:#555;}
+
+/* TRANSLATOR */
+.translator-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:start;}
+.lang-swap-btn{width:40px;height:40px;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:all 0.2s;margin-top:36px;flex-shrink:0;}
+.lang-swap-btn:hover{border-color:var(--green);color:var(--green-light);}
+
+/* MARKET */
+.market-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:16px;}
+.market-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;}
+.market-price{font-size:1.2rem;font-weight:800;color:var(--green-light);}
+.market-name{font-size:0.75rem;color:var(--text2);margin-top:4px;}
+.market-change{font-size:0.7rem;margin-top:4px;}
+.market-change.up{color:#22c55e;}
+.market-change.down{color:var(--red);}
+.market-change.stable{color:var(--muted);}
+
+/* BADGE */
+.badge{display:inline-block;padding:2px 10px;border-radius:100px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;}
+.badge-free{background:rgba(0,166,81,0.15);color:var(--green);}
+.badge-pro{background:rgba(255,215,0,0.12);color:var(--gold);}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border);color:var(--text);padding:10px 18px;border-radius:10px;font-size:0.82rem;z-index:3000;transition:transform 0.3s;box-shadow:0 8px 24px rgba(0,0,0,0.4);max-width:300px;text-align:center;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.success{border-color:rgba(0,166,81,0.4);}
+.toast.error{border-color:rgba(230,57,70,0.4);}
+
+/* FOOTER MINI */
+.footer-mini{padding:28px 24px;text-align:center;border-top:1px solid var(--border);color:var(--muted);font-size:0.78rem;}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .nav-links{display:none;}
+  .tool-layout{grid-template-columns:1fr;}
+  .form-row{grid-template-columns:1fr;}
+  .translator-grid{grid-template-columns:1fr;}.lang-swap-btn{margin:0 auto;}
+}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo"><div class="logo-icon">🌍</div><div class="logo-text">Afri<span>AI</span> Hub</div></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="chat.html">Chat IA</a></li>
+    <li><a href="tools.html" class="active">Outils</a></li>
+    <li><a href="pricing.html">Tarifs</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="btn-theme" onclick="toggleTheme()" id="themeBtn">🌙</button>
+    <a href="chat.html" class="btn-start">Chat IA →</a>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <div class="section-tag" style="font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--green);display:inline-block;margin-bottom:10px">// OUTILS IA</div>
+  <h1>Outils conçus pour <span>l'Afrique</span></h1>
+  <p>CV, traduction, marchés, agriculture — des solutions pratiques pour les défis du quotidien africain.</p>
+</section>
+
+<div class="tools-tabs">
+  <div class="tabs-header">
+    <button class="tab-btn active" onclick="showTab('cv')">📄 Générateur CV</button>
+    <button class="tab-btn" onclick="showTab('translate')">🗣️ Traducteur</button>
+    <button class="tab-btn" onclick="showTab('market')">📊 Prix Marchés</button>
+    <button class="tab-btn" onclick="showTab('agri')">🌾 Conseiller Agricole</button>
+    <button class="tab-btn" onclick="showTab('business')">💼 Business Plan</button>
+  </div>
+
+  <!-- ===== CV ===== -->
+  <div class="tool-panel active" id="panel-cv">
+    <div class="tool-layout">
+      <div class="tool-card-main">
+        <h3>📄 Générateur de CV <span class="badge badge-free" style="margin-left:8px">Gratuit</span></h3>
+        <p class="desc">Crée un CV professionnel adapté aux marchés africains en quelques secondes.</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Prénom & Nom *</label>
+            <input type="text" class="form-input" id="cvName" placeholder="Amadou Diallo">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Poste visé *</label>
+            <input type="text" class="form-input" id="cvPoste" placeholder="Responsable Marketing">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="cvEmail" placeholder="amadou@email.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Téléphone (WhatsApp)</label>
+            <input type="text" class="form-input" id="cvPhone" placeholder="+221 77 xxx xx xx">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Pays / Ville</label>
+            <input type="text" class="form-input" id="cvVille" placeholder="Dakar, Sénégal">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Années d'expérience</label>
+            <select class="form-select" id="cvExp">
+              <option>0-1 an (Débutant)</option>
+              <option>2-3 ans</option>
+              <option>4-7 ans</option>
+              <option>8+ ans (Senior)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Compétences clés</label>
+          <input type="text" class="form-input" id="cvSkills" placeholder="Marketing digital, Excel, CRM, Réseaux sociaux">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Résumé professionnel (optionnel)</label>
+          <textarea class="form-textarea" id="cvSummary" placeholder="Décris brièvement ton profil et tes objectifs..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Langues parlées</label>
+            <input type="text" class="form-input" id="cvLangs" placeholder="Français (C2), Anglais (B2), Wolof">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Secteur cible</label>
+            <select class="form-select" id="cvSecteur">
+              <option>Commerce & Marketing</option>
+              <option>Agriculture & Agroalimentaire</option>
+              <option>Finance & Banque</option>
+              <option>Santé & Pharmacie</option>
+              <option>Informatique & Tech</option>
+              <option>ONG & Développement</option>
+              <option>Éducation & Formation</option>
+              <option>Autre</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-generate" id="cvBtn" onclick="generateCV()">
+          ✨ Générer mon CV
+        </button>
+      </div>
+
+      <div class="output-card" id="cvOutput">
+        <div class="output-header">
+          <div class="output-title">📄 Aperçu du CV</div>
+          <div class="output-actions">
+            <button class="btn-action" onclick="copyCvText()">📋 Copier</button>
+            <button class="btn-action" onclick="printCV()">🖨️ Imprimer/PDF</button>
+          </div>
+        </div>
+        <div id="cvPreviewArea">
+          <div class="output-placeholder"><span>📄</span>Remplis le formulaire et génère ton CV</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TRANSLATE ===== -->
+  <div class="tool-panel" id="panel-translate">
+    <div class="tool-card-main" style="max-width:900px;margin:0 auto">
+      <h3>🗣️ Traducteur Africain <span class="badge badge-free" style="margin-left:8px">Gratuit</span></h3>
+      <p class="desc">Traduis vers les langues africaines : Wolof, Lingala, Bambara, Haoussa, Swahili, Twi et plus.</p>
+      <div class="translator-grid">
+        <div>
+          <div class="form-group">
+            <label class="form-label">Langue source</label>
+            <select class="form-select" id="transFrom">
+              <option value="fr">🇫🇷 Français</option>
+              <option value="en">🇬🇧 English</option>
+              <option value="ar">🇸🇦 العربية</option>
+            </select>
+          </div>
+          <textarea class="form-textarea" id="transInput" placeholder="Écris le texte à traduire..." rows="6" oninput="updateTransChar(this)" maxlength="500"></textarea>
+          <div style="font-size:0.7rem;color:var(--muted);text-align:right;margin-top:4px" id="transCharCount">0/500</div>
+        </div>
+        <button class="lang-swap-btn" onclick="swapLangs()" title="Inverser">⇄</button>
+        <div>
+          <div class="form-group">
+            <label class="form-label">Langue cible</label>
+            <select class="form-select" id="transTo">
+              <option value="wo">🇸🇳 Wolof</option>
+              <option value="ln">🇨🇩 Lingala</option>
+              <option value="bm">🇲🇱 Bambara/Dioula</option>
+              <option value="ha">🇳🇬 Haoussa</option>
+              <option value="sw">🇰🇪 Swahili</option>
+              <option value="tw">🇬🇭 Twi (Akan)</option>
+              <option value="yo">🇳🇬 Yoruba</option>
+              <option value="ig">🇳🇬 Igbo</option>
+              <option value="am">🇪🇹 Amharique</option>
+              <option value="zu">🇿🇦 Zoulou</option>
+            </select>
+          </div>
+          <div class="output-card" style="min-height:120px;padding:16px" id="transOutput">
+            <div class="output-placeholder" style="height:100px"><span>🗣️</span>Traduction ici</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-generate" onclick="translate()" style="margin-top:16px">🌍 Traduire maintenant</button>
+      <div style="margin-top:16px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:0.78rem;font-weight:600;margin-bottom:8px;color:var(--text2)">💡 Phrases utiles rapides :</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px" id="quickPhrases">
+          <button onclick="quickTranslate('Bonjour')" style="background:var(--surface);border:1px solid var(--border);color:var(--text2);padding:4px 12px;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:var(--font)">Bonjour</button>
+          <button onclick="quickTranslate('Merci beaucoup')" style="background:var(--surface);border:1px solid var(--border);color:var(--text2);padding:4px 12px;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:var(--font)">Merci beaucoup</button>
+          <button onclick="quickTranslate('Combien ça coûte ?')" style="background:var(--surface);border:1px solid var(--border);color:var(--text2);padding:4px 12px;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:var(--font)">Combien ça coûte ?</button>
+          <button onclick="quickTranslate('Comment allez-vous ?')" style="background:var(--surface);border:1px solid var(--border);color:var(--text2);padding:4px 12px;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:var(--font)">Comment allez-vous ?</button>
+          <button onclick="quickTranslate('Je cherche un médecin')" style="background:var(--surface);border:1px solid var(--border);color:var(--text2);padding:4px 12px;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:var(--font)">Je cherche un médecin</button>
+          <button onclick="quickTranslate('Bienvenue')" style="background:var(--surface);border:1px solid var(--border);color:var(--text2);padding:4px 12px;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:var(--font)">Bienvenue</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MARKET ===== -->
+  <div class="tool-panel" id="panel-market">
+    <div class="tool-card-main" style="max-width:900px;margin:0 auto">
+      <h3>📊 Prix Marchés Africains <span class="badge badge-pro" style="margin-left:8px">Pro</span></h3>
+      <p class="desc">Suivi des prix en FCFA et shillings pour céréales, légumes et produits locaux. Temps réel en version Pro.</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Marché / Ville</label>
+          <select class="form-select" id="marketCity">
+            <option>Dakar, Sénégal</option>
+            <option>Abidjan, Côte d'Ivoire</option>
+            <option>Lagos, Nigeria</option>
+            <option>Nairobi, Kenya</option>
+            <option>Douala, Cameroun</option>
+            <option>Kinshasa, RD Congo</option>
+            <option>Accra, Ghana</option>
+            <option>Bamako, Mali</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Catégorie</label>
+          <select class="form-select" id="marketCat">
+            <option>Céréales</option>
+            <option>Légumes & Fruits</option>
+            <option>Huiles & Condiments</option>
+            <option>Protéines (viande, poisson)</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-generate" onclick="loadMarket()">📊 Actualiser les prix</button>
+      <div id="marketResult" style="margin-top:20px"></div>
+    </div>
+  </div>
+
+  <!-- ===== AGRI ===== -->
+  <div class="tool-panel" id="panel-agri">
+    <div class="tool-layout">
+      <div class="tool-card-main">
+        <h3>🌾 Conseiller Agricole IA <span class="badge badge-free" style="margin-left:8px">Gratuit</span></h3>
+        <p class="desc">Recommandations basées sur ton climat local, saison et type de culture.</p>
+        <div class="form-group">
+          <label class="form-label">Pays / Région</label>
+          <select class="form-select" id="agriPays">
+            <option>Sahel (Sénégal, Mali, Burkina, Niger)</option>
+            <option>Côte tropicale (Côte d'Ivoire, Ghana, Bénin)</option>
+            <option>Afrique centrale (Cameroun, RDC, Congo)</option>
+            <option>Afrique de l'Est (Kenya, Tanzanie, Éthiopie)</option>
+            <option>Afrique australe (Zimbabwe, Zambie, Mozambique)</option>
+            <option>Maghreb (Maroc, Algérie, Tunisie)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Type de culture</label>
+          <select class="form-select" id="agriCulture">
+            <option>Mil / Sorgho</option>
+            <option>Maïs</option>
+            <option>Riz</option>
+            <option>Manioc</option>
+            <option>Arachide</option>
+            <option>Cacao / Café</option>
+            <option>Coton</option>
+            <option>Légumes (tomates, oignons...)</option>
+            <option>Arbres fruitiers</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Superficie (hectares)</label>
+          <input type="number" class="form-input" id="agriSurface" placeholder="ex: 2" min="0.1" step="0.1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Problème ou question spécifique</label>
+          <textarea class="form-textarea" id="agriQuestion" placeholder="ex: Mes plants jaunissent, que faire ? Quand semer le mil ?"></textarea>
+        </div>
+        <button class="btn-generate" onclick="getAgriAdvice()">🌱 Obtenir des conseils</button>
+      </div>
+      <div class="output-card" id="agriOutput">
+        <div class="output-header">
+          <div class="output-title">🌾 Recommandations IA</div>
+          <div class="output-actions"><button class="btn-action" onclick="copyOutput('agriBody')">📋 Copier</button></div>
+        </div>
+        <div id="agriBody"><div class="output-placeholder"><span>🌾</span>Remplis le formulaire pour obtenir des conseils agricoles</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== BUSINESS ===== -->
+  <div class="tool-panel" id="panel-business">
+    <div class="tool-layout">
+      <div class="tool-card-main">
+        <h3>💼 Générateur Business Plan <span class="badge badge-free" style="margin-left:8px">Gratuit</span></h3>
+        <p class="desc">Génère un plan d'affaires adapté au marché africain ciblé.</p>
+        <div class="form-group">
+          <label class="form-label">Idée ou secteur d'activité *</label>
+          <input type="text" class="form-input" id="bizIdea" placeholder="ex: Livraison repas à domicile, Vente légumes bio">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Ville / Marché cible</label>
+            <input type="text" class="form-input" id="bizVille" placeholder="ex: Abidjan, Lagos, Dakar">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Budget initial (FCFA)</label>
+            <select class="form-select" id="bizBudget">
+              <option>< 100 000 FCFA</option>
+              <option>100k – 500k FCFA</option>
+              <option>500k – 2M FCFA</option>
+              <option>2M – 10M FCFA</option>
+              <option>> 10M FCFA</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Expérience dans ce domaine</label>
+          <select class="form-select" id="bizExp">
+            <option>Aucune (débutant)</option>
+            <option>Quelques notions</option>
+            <option>1-3 ans</option>
+            <option>3+ ans (expert)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Objectif principal</label>
+          <select class="form-select" id="bizObjectif">
+            <option>Revenus complémentaires</option>
+            <option>Activité principale</option>
+            <option>Créer des emplois dans ma communauté</option>
+            <option>Export sous-régional</option>
+          </select>
+        </div>
+        <button class="btn-generate" onclick="generateBizPlan()">💼 Générer le Business Plan</button>
+      </div>
+      <div class="output-card" id="bizOutput">
+        <div class="output-header">
+          <div class="output-title">💼 Business Plan IA</div>
+          <div class="output-actions"><button class="btn-action" onclick="copyOutput('bizBody')">📋 Copier</button></div>
+        </div>
+        <div id="bizBody"><div class="output-placeholder"><span>💼</span>Décris ton idée et génère ton plan d'affaires</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer-mini">© 2026 AfriAI Hub — <a href="index.html" style="color:var(--green-light);text-decoration:none">Retour à l'accueil</a></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// THEME
+function toggleTheme(){const h=document.documentElement;h.dataset.theme=h.dataset.theme==='dark'?'light':'dark';document.getElementById('themeBtn').textContent=h.dataset.theme==='dark'?'🌙':'☀️';localStorage.setItem('theme',h.dataset.theme);}
+(function(){const s=localStorage.getItem('theme');if(s){document.documentElement.dataset.theme=s;if(s==='light')document.getElementById('themeBtn').textContent='🌙';}})();
+
+// TABS
+function showTab(id){
+  document.querySelectorAll('.tool-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  event.target.classList.add('active');
+  // Update URL hash
+  history.replaceState(null,null,'#'+id);
+}
+// Auto-open from hash
+(function(){const h=location.hash.replace('#','');if(h){const btn=Array.from(document.querySelectorAll('.tab-btn')).find(b=>b.getAttribute('onclick')?.includes("'"+h+"'"));if(btn)btn.click();}})();
+
+function showToast(msg,type='success'){const t=document.getElementById('toast');t.textContent=msg;t.className=`toast ${type} show`;setTimeout(()=>t.classList.remove('show'),3000);}
+
+// ===== CV =====
+async function generateCV(){
+  const name=document.getElementById('cvName').value.trim()||'Votre Nom';
+  const poste=document.getElementById('cvPoste').value.trim()||'Poste recherché';
+  const email=document.getElementById('cvEmail').value.trim()||'email@example.com';
+  const phone=document.getElementById('cvPhone').value.trim()||'+XXX XX XXX XX XX';
+  const ville=document.getElementById('cvVille').value.trim()||'Dakar, Sénégal';
+  const skills=document.getElementById('cvSkills').value.trim()||'À compléter';
+  const exp=document.getElementById('cvExp').value;
+  const langs=document.getElementById('cvLangs').value.trim()||'Français, Anglais';
+  const secteur=document.getElementById('cvSecteur').value;
+  const summary=document.getElementById('cvSummary').value.trim();
+
+  document.getElementById('cvBtn').disabled=true;
+  document.getElementById('cvBtn').textContent='⏳ Génération en cours...';
+
+  const area=document.getElementById('cvPreviewArea');
+  area.innerHTML='<div class="loading-bar"><div class="loading-fill"></div></div><p style="text-align:center;color:var(--muted);font-size:0.82rem">Génération de votre CV...</p>';
+
+  // Try API
+  let summaryText = summary || `Professionnel dynamique et motivé, spécialisé dans le secteur ${secteur}, avec ${exp} dans le domaine. Cherche à contribuer à une organisation ambitieuse en Afrique.`;
+  
+  try {
+    const r = await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
+        system:"Tu génères un résumé professionnel percutant pour un CV africain. Réponds UNIQUEMENT avec le texte du résumé (2-3 phrases max), sans titre ni mise en forme.",
+        messages:[{role:"user",content:`Génère un résumé professionnel pour : Nom: ${name}, Poste: ${poste}, Secteur: ${secteur}, Expérience: ${exp}, Ville: ${ville}. Compétences: ${skills}`}]
+      })
+    });
+    if(r.ok){const d=await r.json();summaryText=d.content[0].text;}
+  } catch(e){}
+
+  const cvHTML=`<div class="cv-preview" id="cvDoc">
+    <div class="cv-header">
+      <div class="cv-name">${name.toUpperCase()}</div>
+      <div style="font-size:0.9rem;font-weight:600;color:#00A651;margin:4px 0">${poste}</div>
+      <div class="cv-contact">📍 ${ville} &nbsp;|&nbsp; 📧 ${email} &nbsp;|&nbsp; 📱 ${phone}</div>
+    </div>
+    <div class="cv-section">
+      <div class="cv-section-title">Profil professionnel</div>
+      <p style="font-size:0.8rem;color:#333;line-height:1.5">${summaryText}</p>
+    </div>
+    <div class="cv-section">
+      <div class="cv-section-title">Compétences</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">${skills.split(',').map(s=>`<span style="background:#e8f5ec;color:#007A3D;padding:3px 10px;border-radius:4px;font-size:0.72rem;font-weight:600">${s.trim()}</span>`).join('')}</div>
+    </div>
+    <div class="cv-section">
+      <div class="cv-section-title">Expérience professionnelle</div>
+      <div class="cv-item">
+        <div class="cv-item-title">${poste} · Entreprise précédente</div>
+        <div class="cv-item-sub">2022 – Présent &nbsp;|&nbsp; ${ville}</div>
+        <div style="font-size:0.75rem;color:#444;margin-top:4px;line-height:1.5">• Gestion et développement des activités dans le secteur ${secteur}<br>• Atteinte des objectifs fixés avec ${exp} d'expérience<br>• Coordination avec les équipes locales et partenaires</div>
+      </div>
+    </div>
+    <div class="cv-section">
+      <div class="cv-section-title">Formation</div>
+      <div class="cv-item">
+        <div class="cv-item-title">Licence / Master – ${secteur}</div>
+        <div class="cv-item-sub">Université locale &nbsp;|&nbsp; 2019 – 2022</div>
+      </div>
+    </div>
+    <div class="cv-section">
+      <div class="cv-section-title">Langues</div>
+      <div style="font-size:0.78rem;color:#333">${langs}</div>
+    </div>
+    <div style="margin-top:12px;padding-top:8px;border-top:1px solid #ddd;font-size:0.65rem;color:#aaa;text-align:center">Généré par AfriAI Hub 🌍 — afriaihub.com</div>
+  </div>`;
+
+  area.innerHTML=cvHTML;
+  document.getElementById('cvBtn').disabled=false;
+  document.getElementById('cvBtn').textContent='✨ Régénérer le CV';
+  showToast('✅ CV généré avec succès !','success');
+}
+
+function copyCvText(){
+  const doc=document.getElementById('cvDoc');
+  if(!doc){showToast('Génère un CV d\'abord','error');return;}
+  navigator.clipboard.writeText(doc.innerText).then(()=>showToast('📋 CV copié !','success'));
+}
+function printCV(){
+  const doc=document.getElementById('cvDoc');
+  if(!doc){showToast('Génère un CV d\'abord','error');return;}
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>CV - AfriAI Hub</title><style>body{font-family:Georgia,serif;padding:40px;max-width:800px;margin:0 auto;}</style></head><body>${doc.outerHTML}</body></html>`);
+  w.document.close();w.print();
+}
+
+// ===== TRANSLATE =====
+const langNames={wo:'Wolof',ln:'Lingala',bm:'Bambara/Dioula',ha:'Haoussa',sw:'Swahili',tw:'Twi',yo:'Yoruba',ig:'Igbo',am:'Amharique',zu:'Zoulou'};
+const mockTranslations={
+  wo:{
+    'Bonjour':'Salamalekum / Mangi dem',
+    'Merci beaucoup':'Jërejëf lool',
+    'Combien ça coûte ?':'Ñaata lay jar?',
+    'Comment allez-vous ?':'Nanga def?',
+    'Bienvenue':'Dalal ak jàmm',
+    'Je cherche un médecin':'Dama bëgg doktor bi',
+  },
+  sw:{
+    'Bonjour':'Habari (mch.) / Jambo',
+    'Merci beaucoup':'Asante sana',
+    'Combien ça coûte ?':'Ni bei gani?',
+    'Comment allez-vous ?':'Habari yako?',
+    'Bienvenue':'Karibu',
+    'Je cherche un médecin':'Ninatafuta daktari',
+  },
+  ha:{
+    'Bonjour':'Sannu',
+    'Merci beaucoup':'Na gode ƙwarai',
+    'Combien ça coûte ?':'Nawa ne farashi?',
+    'Comment allez-vous ?':'Kana lafiya?',
+    'Bienvenue':'Maraba',
+    'Je cherche un médecin':'Ina neman likita',
+  },
+};
+
+function updateTransChar(el){document.getElementById('transCharCount').textContent=el.value.length+'/500';}
+function quickTranslate(text){document.getElementById('transInput').value=text;translate();}
+function swapLangs(){showToast('ℹ️ Traduit principalement vers les langues africaines','success');}
+
+async function translate(){
+  const text=document.getElementById('transInput').value.trim();
+  const to=document.getElementById('transTo').value;
+  if(!text){showToast('Écris du texte à traduire','error');return;}
+
+  const out=document.getElementById('transOutput');
+  out.innerHTML='<div class="loading-bar"><div class="loading-fill"></div></div><p style="text-align:center;color:var(--muted);font-size:0.82rem">Traduction en cours...</p>';
+
+  // Check mock first
+  const mock=mockTranslations[to]?.[text];
+  
+  try{
+    const r=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:500,
+        system:`Tu es un expert en langues africaines. Traduis le texte fourni en ${langNames[to]}. Réponds UNIQUEMENT avec : 1) La traduction 2) La prononciation phonétique entre parenthèses 3) Une note culturelle courte si pertinente. Sois précis et naturel.`,
+        messages:[{role:"user",content:`Traduis en ${langNames[to]} : "${text}"`}]
+      })
+    });
+    if(!r.ok)throw new Error();
+    const d=await r.json();
+    out.innerHTML=`<div style="padding:4px"><div style="font-size:0.7rem;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em">${langNames[to]}</div><div style="font-size:1rem;font-weight:700;color:var(--green-light);margin-bottom:8px">${d.content[0].text.split('\n')[0]}</div><div style="font-size:0.82rem;color:var(--text2);line-height:1.6">${d.content[0].text.replace(/\n/g,'<br>')}</div></div>`;
+  }catch(e){
+    const fallback=mock||`[Traduction ${langNames[to]}]\n\n"${text}"\n\nNote : Connecte l'API Claude pour des traductions précises. Cette version utilise une base locale limitée.`;
+    out.innerHTML=`<div style="padding:4px"><div style="font-size:0.7rem;color:var(--muted);margin-bottom:8px">${langNames[to]}</div><div style="font-size:0.875rem;color:var(--text);line-height:1.6;white-space:pre-line">${fallback}</div></div>`;
+  }
+  showToast(`🗣️ Traduit en ${langNames[to]}!`,'success');
+}
+
+// ===== MARKET =====
+const marketData={
+  'Dakar, Sénégal':{cereales:[{n:'Riz importé',p:'475',u:'kg',t:'stable'},{n:'Mil local',p:'295',u:'kg',t:'up'},{n:'Maïs',p:'185',u:'kg',t:'down'},{n:'Fonio',p:'680',u:'kg',t:'stable'}],legumes:[{n:'Tomates',p:'725',u:'kg',t:'up'},{n:'Oignons',p:'375',u:'kg',t:'stable'},{n:'Gombo',p:'500',u:'kg',t:'down'},{n:'Patate douce',p:'250',u:'kg',t:'stable'}]},
+  'Abidjan, Côte d\'Ivoire':{cereales:[{n:'Riz parfumé',p:'550',u:'kg',t:'stable'},{n:'Maïs',p:'210',u:'kg',t:'up'},{n:'Attiéké',p:'350',u:'kg',t:'stable'},{n:'Plantain',p:'400',u:'kg',t:'up'}],legumes:[{n:'Tomates cerises',p:'800',u:'kg',t:'up'},{n:'Aubergine',p:'450',u:'kg',t:'stable'},{n:'Igname',p:'700',u:'kg',t:'down'},{n:'Gombos',p:'600',u:'kg',t:'stable'}]},
+};
+function loadMarket(){
+  const city=document.getElementById('marketCity').value;
+  const cat=document.getElementById('marketCat').value;
+  const data=marketData[city]||marketData['Dakar, Sénégal'];
+  const catKey=cat.startsWith('Cér')?'cereales':'legumes';
+  const items=data[catKey]||data.cereales;
+  const trendIcon={up:'↑ +5%',down:'↓ -3%',stable:'→ Stable'};
+  const trendClass={up:'up',down:'down',stable:'stable'};
+  
+  const now=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('marketResult').innerHTML=`
+    <div style="font-size:0.72rem;color:var(--muted);margin-bottom:12px">📍 ${city} · Mise à jour simulée ${now} · <span style="color:var(--gold)">Temps réel disponible en Pro</span></div>
+    <div class="market-grid">${items.map(i=>`<div class="market-card">
+      <div class="market-price">${i.p} FCFA</div>
+      <div class="market-name">${i.n}</div>
+      <div class="market-change ${trendClass[i.t]}">${trendIcon[i.t]}</div>
+    </div>`).join('')}</div>
+    <div style="margin-top:14px;padding:12px;background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.15);border-radius:10px;font-size:0.8rem;color:var(--text2)">
+      💡 <strong>Analyse IA :</strong> Les prix des céréales montrent une tendance haussière liée aux stocks de fin de saison. Recommandation : acheter en stock dans les 2 prochaines semaines.
+    </div>`;
+  showToast('📊 Prix actualisés !','success');
+}
+
+// ===== AGRI =====
+async function getAgriAdvice(){
+  const pays=document.getElementById('agriPays').value;
+  const culture=document.getElementById('agriCulture').value;
+  const surface=document.getElementById('agriSurface').value||'1';
+  const question=document.getElementById('agriQuestion').value.trim()||'Conseils généraux pour cette culture';
+
+  document.getElementById('agriBody').innerHTML='<div class="loading-bar"><div class="loading-fill"></div></div><p style="text-align:center;color:var(--muted);font-size:0.82rem">Analyse climatique et agronomique...</p>';
+
+  try{
+    const r=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
+        system:"Tu es un agronome expert en agriculture africaine. Donne des conseils pratiques, concrets et adaptés au contexte local. Utilise des données réalistes pour la région. Format: sections claires avec emojis.",
+        messages:[{role:"user",content:`Région: ${pays}\nCulture: ${culture}\nSuperficie: ${surface} hectare(s)\nQuestion/Problème: ${question}\n\nDonne des recommandations agricoles complètes.`}]
+      })
+    });
+    if(!r.ok)throw new Error();
+    const d=await r.json();
+    document.getElementById('agriBody').innerHTML=`<div style="font-size:0.875rem;line-height:1.7;color:var(--text)">${d.content[0].text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`;
+  }catch(e){
+    document.getElementById('agriBody').innerHTML=`<div style="font-size:0.875rem;line-height:1.7;color:var(--text2)">
+      🌾 <strong>Conseils ${culture} – ${pays}</strong><br><br>
+      📅 <strong>Calendrier cultural :</strong><br>
+      • Préparation sol : Mars-Avril (saison sèche)<br>
+      • Semis : Mai-Juin (début pluies)<br>
+      • Sarclage : 3-4 semaines après levée<br>
+      • Récolte : Octobre-Novembre<br><br>
+      💊 <strong>Fertilisation recommandée :</strong><br>
+      • NPK 15-15-15 : 150-200 kg/ha au semis<br>
+      • Urée : 50 kg/ha en couverture (30 jours)<br><br>
+      ⚠️ <strong>Problèmes fréquents :</strong><br>
+      • Mildiou : traitement cuivre (1-2 applications)<br>
+      • Striga : herbicide pré-émergence<br><br>
+      💡 <strong>Conseil IA :</strong> Configure ton API Claude pour des conseils personnalisés basés sur la météo de ta région !
+    </div>`;
+  }
+  showToast('🌾 Conseils générés !','success');
+}
+
+// ===== BUSINESS =====
+async function generateBizPlan(){
+  const idea=document.getElementById('bizIdea').value.trim();
+  if(!idea){showToast('Décris ton idée d\'abord !','error');return;}
+  const ville=document.getElementById('bizVille').value;
+  const budget=document.getElementById('bizBudget').value;
+  const exp=document.getElementById('bizExp').value;
+  const objectif=document.getElementById('bizObjectif').value;
+
+  document.getElementById('bizBody').innerHTML='<div class="loading-bar"><div class="loading-fill"></div></div><p style="text-align:center;color:var(--muted);font-size:0.82rem">Analyse du marché africain...</p>';
+
+  try{
+    const r=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
+        system:"Tu es un expert en création d'entreprise en Afrique. Génère un business plan concis et actionnable. Utilise le contexte africain (FCFA, marchés locaux, mobile money, réalités économiques). Format structuré avec sections claires.",
+        messages:[{role:"user",content:`Idée: ${idea}\nVille: ${ville}\nBudget: ${budget}\nExpérience: ${exp}\nObjectif: ${objectif}\n\nGénère un business plan africain adapté.`}]
+      })
+    });
+    if(!r.ok)throw new Error();
+    const d=await r.json();
+    document.getElementById('bizBody').innerHTML=`<div style="font-size:0.875rem;line-height:1.7;color:var(--text)">${d.content[0].text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`;
+  }catch(e){
+    document.getElementById('bizBody').innerHTML=`<div style="font-size:0.875rem;line-height:1.7;color:var(--text2)">
+      💼 <strong>Business Plan : ${idea}</strong><br><br>
+      🎯 <strong>Concept :</strong> ${idea} ciblant le marché de ${ville||'votre ville'}.<br><br>
+      💰 <strong>Investissement initial :</strong> ${budget}<br><br>
+      📊 <strong>Analyse SWOT :</strong><br>
+      ✅ Forces : Demande locale forte, faible concurrence formelle<br>
+      ⚠️ Faiblesses : ${exp} d'expérience<br>
+      🚀 Opportunités : Croissance mobile, CEDEAO, financement UEMOA<br>
+      ⚡ Menaces : Instabilité prix, concurrence informelle<br><br>
+      📈 <strong>Projection 12 mois :</strong><br>
+      • Mois 1-3 : Lancement, acquisition 50 premiers clients<br>
+      • Mois 4-6 : Croissance, CA mensuel cible 150-300k FCFA<br>
+      • Mois 7-12 : Consolidation, envisager expansion<br><br>
+      💡 Connecte l'API Claude pour un plan détaillé personnalisé !
+    </div>`;
+  }
+  showToast('💼 Business plan généré !','success');
+}
+
+function copyOutput(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  navigator.clipboard.writeText(el.innerText).then(()=>showToast('📋 Copié !','success'));
+}
+</script>
+</body>
+</html>
